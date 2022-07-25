@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
 import es.ipow.agenda.core.SQLiteHelper
+import es.ipow.agenda.core.hideKeyboard
 import es.ipow.agenda.databinding.FragmentNewBinding
 
 class NewFragment : Fragment() {
@@ -46,6 +47,7 @@ class NewFragment : Fragment() {
             } else {
                 toast("No se ha podido guardar", Toast.LENGTH_LONG)
             }
+            hideKeyboard()
         }
     }
 

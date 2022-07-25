@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import androidx.fragment.app.Fragment
 
 class SQLiteHelper (context: Context):SQLiteOpenHelper (context, "addressBook.db",null, 1) {
     override fun onCreate(db: SQLiteDatabase?) {
@@ -35,12 +36,12 @@ class SQLiteHelper (context: Context):SQLiteOpenHelper (context, "addressBook.db
     }
 
     // Creamos una función para BORRAR datos
-    fun deleteData (id: Int) : Int {
-        val args = arrayOf(id.toString())
+    fun deleteData (id: String) : Int {
+        val args = arrayOf(id)
 
         val db = this.writableDatabase
         // La ejecución de este comando devuelve el número de registros afectados
-        val affectedRows = db.delete("friends", "_id = ?",args)
+        val affectedRows = db.delete("contacts", "_id = ?",args)
         // Alternativamente. Pero esta forma no devuelve nada
         // db.execSQL("DELETE FROM friends WHERE _id = ?", args)
         db.close()
@@ -48,8 +49,8 @@ class SQLiteHelper (context: Context):SQLiteOpenHelper (context, "addressBook.db
     }
 
     // Creamos una función para MODIFICAR datos
-    fun updateData (id:Int, name: String, last_name: String, email: String, phone: String) {
-        val args = arrayOf(id.toString())
+    fun updateData (id:String, name: String, last_name: String, email: String, phone: String) : Int {
+        val args = arrayOf(id)
 
         // ContentValues tiene una estructura de tipo Map()
         val data = ContentValues()
@@ -60,7 +61,8 @@ class SQLiteHelper (context: Context):SQLiteOpenHelper (context, "addressBook.db
         // Abro la DB en modo ESCRITURA
         val db = this.writableDatabase
         // La ejecución de este comando devuelve el número de registros afectados
-        db.update("contacts", data, "_id = ?",args)
+        val affectedRows = db.update("contacts", data, "_id = ?",args)
         db.close()
+        return affectedRows
     }
 }

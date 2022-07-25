@@ -1,59 +1,74 @@
 package es.ipow.agenda
 
+import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import es.ipow.agenda.core.GetSpinner
+import es.ipow.agenda.core.SQLiteHelper
+import es.ipow.agenda.core.hideKeyboard
+import es.ipow.agenda.core.toast
+import es.ipow.agenda.databinding.FragmentUpdateBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [updateFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class updateFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _b : FragmentUpdateBinding? = null
+    private val b get() = _b!!
+    private lateinit var contactsDBHelper : SQLiteHelper
+    private val spnOpt = arrayOf("")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_update, container, false)
+        _b = FragmentUpdateBinding.inflate(inflater, container, false)
+        return b.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment updateFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            updateFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        contactsDBHelper = SQLiteHelper(this.context!!)
+        GetSpinner(b.spinnerContactUpdate, spnOpt, sqliteToArray())
+
+        b.btnUpdate.setOnClickListener {
+            val endIndex = spnOpt[0].indexOf(':')
+            val id = spnOpt[0].substring(0, endIndex)
+            val affectedRows = contactsDBHelper.updateData(id,
+                b.etNameUpdate.text.toString(),
+                b.etLastNameUpdate.text.toString(),
+                b.etMailUpdate.text.toString(),
+                b.etPhoneUpdate.text.toString())
+            hideKeyboard()
+            b.etNameUpdate.text.clear()
+            b.etLastNameUpdate.text.clear()
+            b.etMailUpdate.text.clear()
+            b.etPhoneUpdate.text.clear()
+            GetSpinner(b.spinnerContactUpdate, spnOpt, sqliteToArray())
+            if (affectedRows > 0) {
+                toast("Has modificado $affectedRows registros")
+            } else {
+                toast("No se han modificado registros")
             }
+        }
     }
+
+    fun sqliteToArray():Array<String> {
+        val sqliteData = arrayListOf<String>()
+        // Abro la base de datos en modo LECTURA
+        val db : SQLiteDatabase = contactsDBHelper.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM contacts", null)
+
+        // Compruebo si hay algún registro
+        if (cursor.moveToFirst()) {
+            do {
+                sqliteData.add(cursor.getInt(0).toString() + ": " +
+                        cursor.getString(1) + " " + cursor.getString(2))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return sqliteData.toTypedArray()
+    }
+
 }
