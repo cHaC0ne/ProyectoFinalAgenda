@@ -2,6 +2,7 @@ package es.ipow.agenda
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController

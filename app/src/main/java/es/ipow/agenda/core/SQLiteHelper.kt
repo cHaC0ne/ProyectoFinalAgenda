@@ -21,7 +21,7 @@ class SQLiteHelper (context: Context):SQLiteOpenHelper (context, "addressBook.db
     }
 
     // Creamos una función para añadir datos
-    fun addData (name: String, last_name: String, email: String, phone: String,) {
+    fun addData (name: String, last_name: String, email: String, phone: String) {
         // ContentValues tiene una estructura de tipo Map()
         val data = ContentValues()
         data.put("name", name)
@@ -31,6 +31,36 @@ class SQLiteHelper (context: Context):SQLiteOpenHelper (context, "addressBook.db
         // Abro la DB en modo ESCRITURA
         val db = this.writableDatabase
         db.insert("contacts", null,data)
+        db.close()
+    }
+
+    // Creamos una función para BORRAR datos
+    fun deleteData (id: Int) : Int {
+        val args = arrayOf(id.toString())
+
+        val db = this.writableDatabase
+        // La ejecución de este comando devuelve el número de registros afectados
+        val affectedRows = db.delete("friends", "_id = ?",args)
+        // Alternativamente. Pero esta forma no devuelve nada
+        // db.execSQL("DELETE FROM friends WHERE _id = ?", args)
+        db.close()
+        return affectedRows
+    }
+
+    // Creamos una función para MODIFICAR datos
+    fun updateData (id:Int, name: String, last_name: String, email: String, phone: String) {
+        val args = arrayOf(id.toString())
+
+        // ContentValues tiene una estructura de tipo Map()
+        val data = ContentValues()
+        data.put("name", name)
+        data.put("last_name", last_name)
+        data.put("email", email)
+        data.put("phone", phone)
+        // Abro la DB en modo ESCRITURA
+        val db = this.writableDatabase
+        // La ejecución de este comando devuelve el número de registros afectados
+        db.update("contacts", data, "_id = ?",args)
         db.close()
     }
 }
