@@ -46,7 +46,7 @@ class deleteFragment : Fragment() {
         // Abro la base de datos en modo LECTURA
         val db : SQLiteDatabase = contactsDBHelper.readableDatabase
         val cursor = db.rawQuery(
-            "SELECT * FROM contacts", null)
+            "SELECT * FROM ${SQLiteHelper.TABLE_NAME}", null)
 
         // Compruebo si hay algún registro
         if (cursor.moveToFirst()) {

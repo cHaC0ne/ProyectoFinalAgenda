@@ -32,9 +32,6 @@ class ListFragment : Fragment() {
     }
 
     fun initRecyclerView(){
-//        val contactList = listOf<Contact>(
-//            Contact("2","Marcos", "Redfor", "m@m.com","6655449988"),
-//            Contact("3","Pepe", "Perez", "p@m.com","6655449988"))
         b.rvContacts.layoutManager = LinearLayoutManager(this.context)
         b.rvContacts.adapter = ContactAdapter(sqliteToList())
     }
@@ -43,7 +40,7 @@ class ListFragment : Fragment() {
         // Abro la base de datos en modo LECTURA
         val db : SQLiteDatabase = contactsDBHelper.readableDatabase
         val cursor = db.rawQuery(
-            "SELECT * FROM contacts", null)
+            "SELECT * FROM ${SQLiteHelper.TABLE_NAME}", null)
         val contactList = mutableListOf<Contact>()
         // Compruebo si hay algún registro
         if (cursor.moveToFirst()) {
