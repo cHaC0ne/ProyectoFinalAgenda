@@ -8,9 +8,12 @@
     <string name="list">Listado</string>
     <string name="id">ID</string>
     <string name="name">Nombre</string>
+    <string name="name_">Nombre:</string>
     <string name="last_name">Apellido</string>
     <string name="mail">E-mail</string>
+    <string name="mail_">E-mail:</string>
     <string name="phone">Teléfono</string>
+    <string name="phone_">Telf.:</string>
     <string name="new_contact">Nuevo Contacto</string>
     <string name="delete_contact">Eliminar Contacto</string>
     <string name="update_contact">Actualizar Contacto</string>
